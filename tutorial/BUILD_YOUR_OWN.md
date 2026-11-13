@@ -23,29 +23,30 @@ Add `lut`, `template`, `music`, `sfx` and so on later. The viewer shows whatever
 
 ## 2. Write one Markdown file per technique
 
-`starter/catalog/transitions/whip-blur.md`:
+`starter/catalog/transitions/whip-pan.md`:
 
 ```markdown
 ---
 id: t_whip
 kind: transition
-name: Whip blur
+name: Whip pan
 group: Motion through the cut
 preview: ../docs/previews/t_whip.gif
 tags: [fast, music-edit]
 ---
-A smears sideways into B on a directional blur peak.
+A whips off to the left with real motion blur and B lands from the right, one continuous move.
 
 ## How
-ADJ layer over the cut: Directional Blur 0→150→0 (6 f out / 12 f in),
-Transform position ±1300 px, Motion Tile mirror 300 %.
+ADJ layer over the cut: Transform position X 0→−1100 px (5 f, ease-in)
+then +1100→0 px on B (10 f, ease-out, influence 90 %), shutter angle 300.
+Motion Tile mirror 300 % on both clips so the edges never show.
 ```
 
 The rules that make a library actually useful:
 
-- **The first line is what it looks like**, in plain words. "A smears sideways into B" beats "Directional whip v2".
+- **The first line is what it looks like**, in plain words. "A whips off to the left and B lands from the right" beats "Directional whip v2".
 - **`## How` has numbers.** Effect names, values, frame counts, eases. If you can't rebuild it from the card in two minutes, the card isn't done.
-- **`group` is how you browse.** For transitions I use groups like *Cuts & flashes*, *Wipes & reveals*, *Motion through the cut* and *Glitch & distortion*. Keep it to 4–8 groups per kind.
+- **`group` is how you browse.** For transitions I use groups like *Light & flashes*, *Wipes & reveals*, *Motion through the cut* and *Glitch & distortion*. Keep it to 4–8 groups per kind.
 - **Stable `id`s.** Number your transitions (`t_01`, `t_02`…) so you can say "use 12 and 31" in a brief.
 - **Write the card the day you build the effect.** It takes 2 minutes then; later it takes 20, or never happens.
 
@@ -70,7 +71,17 @@ With the script in `starter/`:
 ./make_previews.sh clip final_render.mp4 12.4 2 previews/t_whip.gif
 ```
 
-The `demo` mode uses ffmpeg's built-in `xfade` transitions (`fade`, `fadewhite`, `slideup`, `smoothleft`, `circleopen`, `radial`, `pixelize`, `hblur`, `zoomin`, `squeezeh`, `diagtl`, `dissolve`, `hlwind`, `fadeblack`, `coverup`, `revealdown`, and more). They're good placeholders. The best previews are cut from your real edits, because those show the version with your motion blur, grade and timing.
+The `demo` mode uses ffmpeg's built-in `xfade` transitions (`fade`, `fadewhite`, `slideup`, `smoothleft`, `circleopen`, `radial`, `pixelize`, `hblur`, `zoomin`, `squeezeh`, `diagtl`, `dissolve`, `hlwind`, `fadeblack`, `coverup`, `revealdown`, and more). They're good placeholders, but they all look a bit like PowerPoint.
+
+The previews in this repo are made with `starter/txengine.py` instead: a small Python + OpenCV renderer with 14 real moves (whip pan, zoom punch, spin, glitch tear, light burn, grid reveal, card flip, liquid blob, jaws, halftone dissolve, shock ripple, card toss, pixel stretch, light leak). Each frame averages many sub-frame renders, so the motion blur is real, edges are mirrored like Motion Tile, and every move follows the 1:2 rule (5 f out, 10 f in).
+
+```bash
+pip install numpy opencv-python
+FACE_A=115,435 FACE_B=240,320 python3 txengine.py plate_a.mp4 plate_b.mp4 out/   # face centres in px, for zoom/halftone/ripple
+./make_previews.sh clip out/whip.mp4 0 2.2 previews/t_whip.gif
+```
+
+The best previews of all are still cut from your real edits, because those show the version with your grade and timing.
 
 ## 4. Build and open
 
@@ -97,9 +108,9 @@ This is where the library pays off. Instead of "make it look cool", a brief look
 NEW VIDEO
 Idea: 15 s product teaser, hook on the first word, hard cut to black at the end.
 
-Whip blur (transition)
-A smears sideways into B on a directional blur peak.
-How: ADJ layer over the cut: Directional Blur 0→150→0 (6 f out / 12 f in) …
+Whip pan (transition)
+A whips off to the left with real motion blur and B lands from the right.
+How: ADJ layer over the cut: Transform position X 0→−1100 px (5 f, ease-in) …
 
 Film grain (effect)
 How: Noise 22 %, colour off, clipping on …

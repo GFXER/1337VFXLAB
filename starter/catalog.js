@@ -233,195 +233,171 @@ window.CATALOG = [
   "how": ""
  },
  {
-  "id": "t_radial",
+  "id": "t_flip",
   "kind": "transition",
-  "name": "Clock wipe",
-  "group": "Wipes & reveals",
-  "preview": "../docs/previews/t_radial.gif",
+  "name": "Card flip",
+  "group": "Motion through the cut",
+  "preview": "../docs/previews/t_flip.gif",
   "tags": [
    "demo"
   ],
-  "desc": "Radial sweep around the frame centre.",
-  "how": "Radial Wipe on A, start angle 0°, completion 0→100 over 12 f."
+  "desc": "The frame turns into a card, flips edge-on on the cut and comes back around as B.",
+  "how": "A and B precomped at 86 % on a dark background, 3D layers, camera 1100 px. Y rotation 0→−90° on A (5 f, ease-in), +90→0° on B (10 f, ease-out). Darken with the angle (Exposure −1 when edge-on). Motion blur on."
  },
  {
-  "id": "t_cover",
+  "id": "t_card",
   "kind": "transition",
-  "name": "Cover up",
-  "group": "Wipes & reveals",
-  "preview": "../docs/previews/t_cover.gif",
+  "name": "Card toss",
+  "group": "Motion through the cut",
+  "preview": "../docs/previews/t_card.gif",
   "tags": [
    "demo"
   ],
-  "desc": "B slides over A from below, A stays put.",
-  "how": "B position Y +1920→0, expo-out over 12 f, drop shadow 40 %."
+  "desc": "A shrinks into a rounded card with a soft shadow and gets tossed off the top; B is already underneath.",
+  "how": "A: scale 100→62 %, rounded-corner mask 0→70 px, rotation 0→−6° (8 f expo-out), then Y −1050 px and rotation −10° in 5 f ease-in. Drop Shadow 55 %, softness 60. B underneath settles 108→100 % over 22 f. Motion blur on."
  },
  {
-  "id": "t_fade",
+  "id": "t_glitch",
   "kind": "transition",
-  "name": "Crossfade",
-  "group": "Cuts & flashes",
-  "preview": "../docs/previews/t_fade.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "The plain one, for calm moments.",
-  "how": "Opacity A 100→0 / B 0→100 over 12 f."
- },
- {
-  "id": "t_diag",
-  "kind": "transition",
-  "name": "Diagonal wipe",
-  "group": "Wipes & reveals",
-  "preview": "../docs/previews/t_diag.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "Hard-edged wipe from the top-left corner.",
-  "how": "Linear Wipe 135°, feather 0, completion 0→100 over 10 f."
- },
- {
-  "id": "t_dip",
-  "kind": "transition",
-  "name": "Dip to black",
-  "group": "Cuts & flashes",
-  "preview": "../docs/previews/t_dip.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "Classic dip, short and eased.",
-  "how": "Black solid opacity 0→100→0, 6 f / 9 f, ease 80 %."
- },
- {
-  "id": "t_dissolve",
-  "kind": "transition",
-  "name": "Grain dissolve",
-  "group": "Cuts & flashes",
-  "preview": "../docs/previews/t_dissolve.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "Noise-pattern dissolve instead of a flat crossfade.",
-  "how": "Gradient Wipe on A with a Fractal Noise layer as the map, softness 0.1."
- },
- {
-  "id": "t_circle",
-  "kind": "transition",
-  "name": "Iris open",
-  "group": "Wipes & reveals",
-  "preview": "../docs/previews/t_circle.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "B opens from the centre in a growing circle.",
-  "how": "Ellipse mask on B, expansion keyed with expo-out, feather 40."
- },
- {
-  "id": "t_pixel",
-  "kind": "transition",
-  "name": "Pixel dissolve",
+  "name": "Glitch tear",
   "group": "Glitch & distortion",
-  "preview": "../docs/previews/t_pixel.gif",
+  "preview": "../docs/previews/t_glitch.gif",
   "tags": [
    "demo"
   ],
-  "desc": "A breaks into blocks that resolve into B.",
-  "how": "Mosaic 1→60→1 blocks around the cut + hard cut on the coarsest frame."
+  "desc": "Horizontal slices of A and B tear sideways with an RGB split and one inverted frame.",
+  "how": "10 f window centred on the cut. Slices 8–70 px tall shifted ±70 px (random per frame, decaying to 0 at the edges of the window), about a third of the slices taken from the other clip. Channel offset R −14 px / B +14 px. Invert on 1 frame. Sapphire: S_DigitalDamage 4–6 f does most of this in one effect."
  },
  {
-  "id": "t_push",
+  "id": "t_grid",
   "kind": "transition",
-  "name": "Push up",
-  "group": "Motion through the cut",
-  "preview": "../docs/previews/t_push.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "A pushes out the top while B rides in from below, one continuous move.",
-  "how": "Both clips in a precomp on one null: Y −1920 over 8 f out / 16 f in (1:2 rule), CC Force Motion Blur."
- },
- {
-  "id": "t_reveal",
-  "kind": "transition",
-  "name": "Reveal down",
+  "name": "Grid reveal",
   "group": "Wipes & reveals",
-  "preview": "../docs/previews/t_reveal.gif",
+  "preview": "../docs/previews/t_grid.gif",
   "tags": [
    "demo"
   ],
-  "desc": "A slides off the bottom and reveals B underneath.",
-  "how": "A position Y 0→+1920, ease-in 6 f."
+  "desc": "B arrives as nine tiles, centre first, then the cross, then the corners, each landing with a flash.",
+  "how": "B cropped into a 3×3 grid. Tile order 5, 2-4-6-8, 1-3-7-9 with a 1.6 f stagger. Each tile: scale 55→100 % over 9 f expo-out, opacity 0→100 in 3 f, Exposure +1→0 over 2 f. A underneath: Gaussian Blur 12, brightness 45 %. Once a tile lands, its slot behind fades to B so no gaps show."
  },
  {
-  "id": "t_smooth",
+  "id": "t_halftone",
   "kind": "transition",
-  "name": "Smooth slide",
-  "group": "Motion through the cut",
-  "preview": "../docs/previews/t_smooth.gif",
+  "name": "Halftone dissolve",
+  "group": "Wipes & reveals",
+  "preview": "../docs/previews/t_halftone.gif",
   "tags": [
    "demo"
   ],
-  "desc": "Soft-edged slide with a long ease tail.",
-  "how": "Linear Wipe 90°, feather 300, completion 0→100 with influence 85 %."
+  "desc": "A breaks into halftone dots that shrink away from the face outward and reveal B.",
+  "how": "Color Halftone (or CC Ball Action) on A, cell 22 px, dot size = luminance × (1 − progress). Progress map: Radial Gradient centred on the face, used as a Gradient Wipe map, 15 f ease-out. B sits underneath."
  },
  {
-  "id": "t_squeeze",
+  "id": "t_jaws",
   "kind": "transition",
-  "name": "Squeeze",
-  "group": "Motion through the cut",
-  "preview": "../docs/previews/t_squeeze.gif",
+  "name": "Jaws",
+  "group": "Wipes & reveals",
+  "preview": "../docs/previews/t_jaws.gif",
   "tags": [
    "demo"
   ],
-  "desc": "A squeezes horizontally, B unfolds.",
-  "how": "Transform scale-X 100→0 / 0→100 % with anchor centre, 6 f out / 12 f in."
+  "desc": "A splits open along a zig-zag bite and the halves slide off the top and bottom to show B.",
+  "how": "CC Jaws on A: shape Spike, height 50, width 60, completion 0→1 over 25 f expo-out. Or two masked copies of A moving Y ∓600 px. 3 px dark stroke on the bite edge."
+ },
+ {
+  "id": "t_burn",
+  "kind": "transition",
+  "name": "Light burn",
+  "group": "Light & flashes",
+  "preview": "../docs/previews/t_burn.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "A over-exposes into a warm white burn and B cools back out of it.",
+  "how": "ADJ over the cut: Exposure 0→+2.5 (5 f, ease-in) and back to 0 over 10 f (ease-out). Glow radius 120, intensity 0→1.6→0 on the same curve. Photo Filter warm 0→40→0 %. Cut on the brightest frame."
+ },
+ {
+  "id": "t_leak",
+  "kind": "transition",
+  "name": "Light leak",
+  "group": "Light & flashes",
+  "preview": "../docs/previews/t_leak.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "A warm orange leak sweeps across the frame and the cut hides under its brightest frame.",
+  "how": "Light-leak plate (or a soft orange Radial Gradient) in Screen, sweeping left→right over 18 f; opacity on a sine curve peaking at 100 % on the cut, plus +0.25 lift at the peak."
+ },
+ {
+  "id": "t_blob",
+  "kind": "transition",
+  "name": "Liquid blob",
+  "group": "Wipes & reveals",
+  "preview": "../docs/previews/t_blob.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "B pours in through soft, organic blobs that bend the picture along their edges.",
+  "how": "Gradient Wipe on A with a Fractal Noise precomp as the map (complexity 3, scale 400, soft), completion 0→100 over 15 f expo-out, softness 0.04. Displacement Map from the same noise, 0→110→0 px, only near the moving edge."
+ },
+ {
+  "id": "t_stretch",
+  "kind": "transition",
+  "name": "Pixel stretch",
+  "group": "Wipes & reveals",
+  "preview": "../docs/previews/t_stretch.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "B's leading edge smears down over A like a scanner line, then snaps clean.",
+  "how": "CC Scale Wipe on B: stretch 100, direction 180°, completion 0→100 over 15 f expo-out. Smear length 260→20 px as it lands."
+ },
+ {
+  "id": "t_ripple",
+  "kind": "transition",
+  "name": "Shock ripple",
+  "group": "Glitch & distortion",
+  "preview": "../docs/previews/t_ripple.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "A shockwave rings out from the face and the cut lands on its peak.",
+  "how": "Wave Warp / CC Ripple Pulse centred on the face: amplitude 0→28→0 px on a bell curve (±9 f around the cut), wavelength 26 px. 3 f crossfade at the peak, Gaussian Blur 0→3→0 with it."
+ },
+ {
+  "id": "t_spin",
+  "kind": "transition",
+  "name": "Spin",
+  "group": "Motion through the cut",
+  "preview": "../docs/previews/t_spin.gif",
+  "tags": [
+   "demo"
+  ],
+  "desc": "Half a turn out of A, half a turn into B; the cut hides inside the blur.",
+  "how": "ADJ Transform rotation 0→180° + scale 100→125 % (5 f, ease-in), then 180→360° + 125→100 % (10 f, ease-out). Motion Tile mirror 300 %, shutter 300, CC Force Motion Blur 16 samples."
  },
  {
   "id": "t_whip",
   "kind": "transition",
-  "name": "Whip blur",
+  "name": "Whip pan",
   "group": "Motion through the cut",
   "preview": "../docs/previews/t_whip.gif",
   "tags": [
    "demo"
   ],
-  "desc": "A smears sideways into B on a directional blur peak.",
-  "how": "ADJ layer over the cut: Directional Blur 0→150→0 (6 f out / 12 f in), Transform position ±1300 px, Motion Tile mirror 300 %."
- },
- {
-  "id": "t_flash",
-  "kind": "transition",
-  "name": "White flash",
-  "group": "Cuts & flashes",
-  "preview": "../docs/previews/t_flash.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "Camera-flash style: instant on, eased decay into B.",
-  "how": "White solid on the cut, opacity 100→0 over 7 f with an ease-out, Exposure +0.4 on B for 4 f."
- },
- {
-  "id": "t_wind",
-  "kind": "transition",
-  "name": "Wind smear",
-  "group": "Glitch & distortion",
-  "preview": "../docs/previews/t_wind.gif",
-  "tags": [
-   "demo"
-  ],
-  "desc": "Horizontal streaks carry A away.",
-  "how": "Turbulent Displace horizontal, size 17, amount 0→400→0 + Directional Blur 90°."
+  "desc": "A whips off to the left with real motion blur and B lands from the right, one continuous move.",
+  "how": "ADJ layer over the cut: Transform position X 0→−1100 px (5 f, ease-in) then +1100→0 px on B (10 f, ease-out, influence 90 %), shutter angle 300. Motion Tile mirror 300 % on both clips so the edges never show. Cut on the fastest frame."
  },
  {
   "id": "t_zoom",
   "kind": "transition",
-  "name": "Zoom through",
+  "name": "Zoom punch",
   "group": "Motion through the cut",
   "preview": "../docs/previews/t_zoom.gif",
   "tags": [
    "demo"
   ],
-  "desc": "Punch into A and land on B, same direction.",
-  "how": "ADJ Transform scale 100→160 % (A) / 60→100 % (B), shutter 300, cut on the fastest frame."
+  "desc": "Punch into the face on A, land wide on B, with a 2-frame white kiss on the cut.",
+  "how": "ADJ Transform with the anchor on the face: scale 100→320 % (5 f, ease-in), then B 35→100 % (10 f, ease-out, influence 90 %). Shutter 300, Motion Tile mirror 300 %. White solid 55→0 % over 3 f on the cut."
  }
 ];

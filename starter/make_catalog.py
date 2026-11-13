@@ -6,7 +6,7 @@ Each entry is one .md file with a small front-matter block:
     ---
     id: t_whip
     kind: transition            # transition | effect | gradient | rule | prompt | tool | anything you like
-    name: Whip blur
+    name: Whip pan
     group: Motion through the cut
     preview: ../docs/previews/t_whip.gif   # optional: gif, mp4, jpg or png, relative to index.html
     tags: [demo, fast]

@@ -6,7 +6,7 @@ This repo is the **showcase and the how-to**, not the app itself. The real one i
 
 ![Transitions demo](docs/hero.gif)
 
-<sub>All previews here are re-rendered on my own footage, so no client work is shown.</sub>
+<sub>All previews here are re-rendered on my own footage (my desk, two monitors), so no client work is shown. Zoom punch · spin · glitch tear · grid reveal · halftone dissolve · jaws · card toss · liquid blob.</sub>
 
 ---
 
@@ -46,10 +46,11 @@ open index.html                  # (Windows: start index.html)  no server, no bu
 
 | File | What it does |
 |---|---|
-| `starter/catalog/**/*.md` | One Markdown file per technique (31 examples: 16 transitions, 6 effects, 4 gradients, rules). |
+| `starter/catalog/**/*.md` | One Markdown file per technique (29 examples: 14 transitions, 6 effects, 4 gradients, rules). |
 | `starter/make_catalog.py` | Turns the entries into `catalog.js`. No dependencies. |
 | `starter/index.html` | The viewer: kinds, search, groups, preview cards, detail sheet, copy recipe, brief builder. One file. |
 | `starter/make_previews.sh` | ffmpeg: cut a preview GIF from a render, or make an A→B demo of any `xfade` transition on your own plates. |
+| `starter/txengine.py` | Python + OpenCV: the renderer behind this repo's 14 transition previews (whip, zoom, spin, glitch, grid, jaws, halftone, card toss…) with real motion blur. Run it on your own plates. |
 | `starter/contact_sheet.sh` | ffmpeg: QC a whole render as one tiled image at 3 fps. |
 
 ## Related
