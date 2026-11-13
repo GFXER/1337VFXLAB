@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VFX Lab starter</title>
+<!-- Minimal library viewer. Data comes from catalog.js (built by make_catalog.py). No build step, opens from disk. -->
+<style>
+:root{--bg:#f4f4f2;--card:#fff;--ink:#111;--muted:#6b6b6b;--line:#e2e2de;--acc:#111}
+@media (prefers-color-scheme:dark){:root{--bg:#0e0e0e;--card:#181818;--ink:#f2f2f2;--muted:#9a9a9a;--line:#2a2a2a;--acc:#f2f2f2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:220px 1fr 300px;min-height:100vh}
+nav{padding:20px 12px;border-right:1px solid var(--line)}
+nav h1{font-size:22px;margin:0 8px 18px;letter-spacing:-.02em}
+nav button{display:flex;justify-content:space-between;width:100%;padding:9px 10px;border:0;border-radius:8px;background:none;color:inherit;font:inherit;cursor:pointer;text-transform:capitalize}
+nav button.on{background:var(--acc);color:var(--bg)}
+nav small{opacity:.6;font-family:ui-monospace,monospace}
+main{padding:20px;min-width:0}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.bar input,.bar select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:inherit;font:inherit}
+.bar input{flex:1;min-width:180px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;position:relative}
+.card.on{outline:2px solid var(--acc)}
+.thumb{aspect-ratio:9/16;background:var(--line);display:grid;place-items:center;color:var(--muted);font-size:12px}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:10px 12px 12px}
+.card h3{margin:0 0 4px;font-size:15px}
+.card p{margin:0;color:var(--muted);font-size:13px}
+.card .grp{margin-top:6px;font:11px ui-monospace,monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.pick{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:0;background:#0008;color:#fff;cursor:pointer}
+aside{padding:20px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+aside h2{margin:0;font-size:18px}
+aside textarea{width:100%;min-height:90px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:inherit;font:inherit}
+pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;font:12px/1.5 ui-monospace,monospace;margin:0}
+.btn{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;cursor:pointer}
+.btn.dark{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+dialog{border:0;border-radius:16px;padding:0;max-width:860px;width:calc(100% - 32px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#0009}
+.sheet{display:grid;grid-template-columns:minmax(0,300px) 1fr}
+.sheet .thumb{aspect-ratio:9/16}
+.sheet .info{padding:22px;display:flex;flex-direction:column;gap:10px}
+.sheet h2{margin:0;font-size:26px}
+.stops{height:42px;border-radius:8px}
+.empty{color:var(--muted);padding:40px 0}
+@media (max-width:900px){.app{grid-template-columns:1fr}nav{display:flex;gap:6px;overflow-x:auto;border:0;padding:12px}nav h1{display:none}nav button{width:auto;white-space:nowrap;gap:8px}aside{border:0;border-top:1px solid var(--line)}.sheet{grid-template-columns:1fr}.sheet .thumb{max-height:50vh}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav id="nav"><h1>VFX Lab</h1></nav>
+  <main>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search name, recipe, tag…" aria-label="Search">
+      <select id="grp" aria-label="Group"></select>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+  <aside>
+    <h2>Brief</h2>
+    <textarea id="idea" placeholder="What is the video? Hook, length, music…"></textarea>
+    <pre id="brief">Pick cards with ○ to build a brief.</pre>
+    <div style="display:flex;gap:8px"><button class="btn dark" id="copy">Copy brief</button><button class="btn" id="clear">Clear</button></div>
+  </aside>
+</div>
+<dialog id="dlg"></dialog>
+<script src="catalog.js"></script>
+<script>
+(function(){
+  var ITEMS = window.CATALOG || [], S = {kind:null, q:'', grp:'', picks:{}};
+  try { S.picks = JSON.parse(localStorage.getItem('vfxlab_picks') || '{}'); } catch (e) {}
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function grad(st){ return 'linear-gradient(90deg,' + st.map(function(s){ return s[1] + ' ' + (s[0]*100) + '%'; }).join(',') + ')'; }
+  function thumb(it){
+    if (it.kind === 'gradient' && it.stops) return '<div class="thumb" style="background:' + grad(it.stops).replace('90deg','180deg') + '"></div>';
+    if (!it.preview) return '<div class="thumb">' + esc(it.kind) + '</div>';
+    if (/\.(mp4|webm|mov)$/i.test(it.preview)) return '<div class="thumb"><video src="' + esc(it.preview) + '" muted loop autoplay playsinline></video></div>';
+    return '<div class="thumb"><img loading="lazy" alt="" src="' + esc(it.preview) + '"></div>';
+  }
+  var ORDER = ['transition','effect','gradient','lut','template','rule','prompt','tool'];   // anything else goes after, A-Z
+  var kinds = {}; ITEMS.slice().sort(function(a,b){ var x=ORDER.indexOf(a.kind), y=ORDER.indexOf(b.kind); x=x<0?99:x; y=y<0?99:y; return x-y || (a.kind<b.kind?-1:1); })
+    .forEach(function(i){ kinds[i.kind] = (kinds[i.kind] || 0) + 1; });
+  S.kind = Object.keys(kinds)[0] || null;
+  function renderNav(){
+    $('nav').innerHTML = '<h1>VFX Lab</h1>' + Object.keys(kinds).map(function(k){
+      return '<button data-k="' + esc(k) + '" class="' + (k === S.kind ? 'on' : '') + '">' + esc(k) + 's <small>' + kinds[k] + '</small></button>'; }).join('');
+    var groups = {}; ITEMS.forEach(function(i){ if (i.kind === S.kind && i.group) groups[i.group] = 1; });
+    $('grp').innerHTML = '<option value="">All groups</option>' + Object.keys(groups).sort().map(function(g){ return '<option' + (g === S.grp ? ' selected' : '') + '>' + esc(g) + '</option>'; }).join('');
+  }
+  function list(){
+    var q = S.q.toLowerCase();
+    return ITEMS.filter(function(i){
+      if (q) return JSON.stringify(i).toLowerCase().indexOf(q) >= 0;   // search everything, across kinds
+      return i.kind === S.kind && (!S.grp || i.group === S.grp);
+    });
+  }
+  function renderGrid(){
+    var L = list();
+    $('grid').innerHTML = L.length ? L.map(function(it){
+      var on = !!S.picks[it.id];
+      return '<article class="card' + (on ? ' on' : '') + '" data-id="' + esc(it.id) + '">' + thumb(it) +
+        '<button class="pick" data-pick="' + esc(it.id) + '" aria-label="Pick ' + esc(it.name) + '">' + (on ? '✓' : '○') + '</button>' +
+        '<div class="body"><h3>' + esc(it.name) + '</h3><p>' + esc(it.desc) + '</p><div class="grp">' + esc(it.group) + '</div></div></article>';
+    }).join('') : '<div class="empty">Nothing matches.</div>';
+  }
+  function recipe(it){ return it.name + ' (' + it.kind + ')\n' + it.desc + (it.how ? '\nHow: ' + it.how : '') + (it.stops ? '\nStops: ' + it.stops.map(function(s){ return s[1] + '@' + s[0]; }).join(' ') : ''); }
+  function renderBrief(){
+    var P = ITEMS.filter(function(i){ return S.picks[i.id]; });
+    $('brief').textContent = P.length ? 'NEW VIDEO\n' + ($('idea').value ? 'Idea: ' + $('idea').value + '\n' : '') + '\n' + P.map(recipe).join('\n\n') : 'Pick cards with ○ to build a brief.';
+    try { localStorage.setItem('vfxlab_picks', JSON.stringify(S.picks)); } catch (e) {}
+  }
+  function open(id){
+    var it = ITEMS.filter(function(i){ return i.id === id; })[0]; if (!it) return;
+    $('dlg').innerHTML = '<div class="sheet">' + thumb(it) + '<div class="info"><small style="color:var(--muted)">' + esc(it.kind) + ' · ' + esc(it.group) + '</small><h2>' + esc(it.name) + '</h2><p>' + esc(it.desc) + '</p>' +
+      (it.stops ? '<div class="stops" style="background:' + grad(it.stops) + '"></div><pre>' + esc(it.stops.map(function(s){ return s[1] + '  ' + s[0]; }).join('\n')) + '</pre>' : '') +
+      (it.how ? '<pre>' + esc(it.how) + '</pre>' : '') +
+      '<div style="display:flex;gap:8px;margin-top:auto"><button class="btn dark" data-pick="' + esc(it.id) + '">' + (S.picks[it.id] ? 'Unpick' : 'Pick for brief') + '</button><button class="btn" data-copy="' + esc(it.id) + '">Copy recipe</button><button class="btn" data-close>Close</button></div></div></div>';
+    if (!$('dlg').open) $('dlg').showModal();
+  }
+  function toggle(id){ if (S.picks[id]) delete S.picks[id]; else S.picks[id] = 1; renderGrid(); renderBrief(); if ($('dlg').open) open(id); }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-pick],[data-k],[data-copy],[data-close],.card'); if (!t) { if (e.target === $('dlg')) $('dlg').close(); return; }
+    if (t.dataset.pick) { e.stopPropagation(); toggle(t.dataset.pick); }
+    else if (t.dataset.k) { S.kind = t.dataset.k; S.grp = ''; S.q = ''; $('q').value = ''; renderNav(); renderGrid(); }
+    else if (t.dataset.copy) { var it = ITEMS.filter(function(i){ return i.id === t.dataset.copy; })[0]; navigator.clipboard && navigator.clipboard.writeText(recipe(it)); t.textContent = 'Copied'; }
+    else if (t.hasAttribute('data-close')) $('dlg').close();
+    else if (t.dataset.id) open(t.dataset.id);
+  });
+  $('q').addEventListener('input', function(){ S.q = this.value; renderGrid(); });
+  $('grp').addEventListener('change', function(){ S.grp = this.value; renderGrid(); });
+  $('idea').addEventListener('input', renderBrief);
+  $('copy').addEventListener('click', function(){ navigator.clipboard && navigator.clipboard.writeText($('brief').textContent); this.textContent = 'Copied'; });
+  $('clear').addEventListener('click', function(){ S.picks = {}; renderGrid(); renderBrief(); });
+  if (!ITEMS.length) $('grid').innerHTML = '<div class="empty">No catalog.js yet. Run: python3 make_catalog.py</div>';
+  renderNav(); renderGrid(); renderBrief();
+})();
+</script>
+</body>
+</html>
